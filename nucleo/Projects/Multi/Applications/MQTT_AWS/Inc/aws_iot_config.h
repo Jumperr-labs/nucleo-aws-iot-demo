@@ -61,7 +61,7 @@
 
 // Get from console
 // =================================================
-#define AWS_IOT_MQTT_HOST              "a3dcj22dr9r3pi.iot.some-were-1.amazonaws.com" //Use your own host.
+#define AWS_IOT_MQTT_HOST              "a3dcja3dcj22dr9r3pi.iot.us-east-1.amazonaws.com" //Use your own host.
 #define AWS_IOT_MQTT_PORT              8883
 #define AWS_IOT_MQTT_CLIENT_ID         "Nucleo" //Should be kept if you are using same device clent.
 #define AWS_IOT_MY_THING_NAME          "Nucleo" //Should be kept if you are using same device thing name.

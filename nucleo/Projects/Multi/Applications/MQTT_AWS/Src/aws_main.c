@@ -280,7 +280,7 @@ int aws_main() {
 			Publish = true;
 						
 			// Here is subscription topic.
-			Params.pTopic = "Nucleo/data";
+			Params.pTopic = "Nucleo/shadow";
 			
 			sprintf(cPayload, "{\"state\": {\"reported\": {\"temperature\": %f}}}",
 				Temperature);
