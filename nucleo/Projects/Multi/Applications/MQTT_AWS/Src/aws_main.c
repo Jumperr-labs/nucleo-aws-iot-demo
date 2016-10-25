@@ -194,15 +194,7 @@ int aws_main() {
 	
 	IoT_Error_t rc = NONE_ERROR;
 	int32_t i = 0;
-
-#if APPLICATION_DEBUG != LOG_NO_DEBUG
-	INFO("HUMID sens      %s", ((int)BSP_HUM_TEMP_Init()== 0)? "OK" : "ERROR");
-	INFO("PRESS sens      %s", ((int)BSP_PRESSURE_Init() == 0)? "OK" : "ERROR");
-	INFO("GYRO|ACCEL sens %s", ((int)BSP_IMU_6AXES_Init() == 0)? "OK" : "ERROR");
-	INFO("MAGNETO sens    %s", ((int)BSP_MAGNETO_Init() == 0)? "OK" : "ERROR");
-#endif	
-	BSP_IMU_6AXES_Enable_Free_Fall_Detection_Ext();
-
+	
 	INFO("\nAWS IoT SDK Version %d.%d.%d-%s\n", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, VERSION_TAG);
 
 
@@ -278,27 +270,10 @@ int aws_main() {
 		fsleep(BUTTONDELAY); //Sleeping for BUTTONDELAY ms
 		
 		//Getting values of sensors
-		if(BSP_HUM_TEMP_GetTemperature((float *)&Temperature) != HUM_TEMP_OK)
-		ERROR("Sensor TEMP0 reading error\r\n");
+		//if(BSP_HUM_TEMP_GetTemperature((float *)&Temperature) != HUM_TEMP_OK)
+		//ERROR("Sensor TEMP0 reading error\r\n");
+		Temperature = 30;
 		
-		if(BSP_HUM_TEMP_GetHumidity((float *)&Humidity) != HUM_TEMP_OK)
-		ERROR("Sensor HUMID reading error\r\n");
-		
-		if(BSP_PRESSURE_GetPressure((float *)&Pressure) != PRESSURE_OK)
-		ERROR("Sensor PRESS reading error\r\n");
-		
-		if(BSP_IMU_6AXES_X_GetAxes((Axes_TypeDef *)&temp_axes) != IMU_6AXES_OK)
-		ERROR("Sensor ACCEL reading error\r\n");
-		Axes_Vector3(&temp_axes, &Accelerometer);
-		
-		if(BSP_IMU_6AXES_G_GetAxes((Axes_TypeDef *)&temp_axes) != IMU_6AXES_OK)
-		ERROR("Sensor GYROS reading error\r\n");
-		Axes_Vector3(&temp_axes, &Gyroscope);
-		
-		if(BSP_MAGNETO_M_GetAxes((Axes_TypeDef *)&temp_axes) != MAGNETO_OK)
-		ERROR("Sensor MAGNET reading error\r\n");
-		Axes_Vector3(&temp_axes, &Magnetometer);
-
 		if(BpushButtonState) //Polling button state each BUTTONDELAY ms
 		{
 			BpushButtonState = 0;
@@ -307,17 +282,12 @@ int aws_main() {
 			// Here is subscription topic.
 			Params.pTopic = "Nucleo/data";
 			
-			sprintf(cPayload, "{\"temperature\": %f, \"humidity\": %f, \"pressure\": %f, \"accelerometer\": [%f, %f, %f], \"gyroscope\": [%f, %f, %f], \"magnetometer\": [%f, %f, %f], \"marker\": true}",
-				Temperature, Humidity, Pressure, Accelerometer.x, Accelerometer.y, Accelerometer.z, Gyroscope.x, Gyroscope.y, Gyroscope.z, Magnetometer.x, Magnetometer.y, Magnetometer.z);
+			sprintf(cPayload, "{\"state\": {\"reported\": {\"temperature\": %f}}}",
+				Temperature);
 #if APPLICATION_DEBUG != LOG_NO_DEBUG
 			INFO("[BTTN] Publishing...");
 			#if APPLICATION_DEBUG == LOG_FULL
 			INFO("       [TEMPE]: %f", Temperature);
-			INFO("       [HUMID]: %f", Humidity);
-			INFO("       [PRESS]: %f", Pressure);
-			INFO("       [ACCEL]: (%f, %f, %f)", Accelerometer.x, Accelerometer.y, Accelerometer.z);
-			INFO("       [GYROS]: (%f, %f, %f)", Gyroscope.x, Gyroscope.y, Gyroscope.z);
-			INFO("       [MAGNE]: (%f, %f, %f)", Magnetometer.x, Magnetometer.y, Magnetometer.z);
 			#endif
 #endif
 		}
@@ -329,18 +299,13 @@ int aws_main() {
 				// Here is subscription topic for shadow.
 				Params.pTopic = "$aws/things/Nucleo/shadow/update";
 				
-				sprintf(cPayload, "{\"state\": {\"reported\": {\"temperature\": %f, \"humidity\": %f, \"pressure\": %f, \"accelerometer\": [%f, %f, %f], \"gyroscope\": [%f, %f, %f], \"magnetometer\": [%f, %f, %f]}}}",
-					Temperature, Humidity, Pressure, Accelerometer.x, Accelerometer.y, Accelerometer.z, Gyroscope.x, Gyroscope.y, Gyroscope.z, Magnetometer.x, Magnetometer.y, Magnetometer.z);
+				sprintf(cPayload, "{\"state\": {\"reported\": {\"temperature\": %f}}}",
+					Temperature);
 
 #if APPLICATION_DEBUG != LOG_NO_DEBUG
 			INFO("[AUTO] Publishing...");
 			#if APPLICATION_DEBUG == LOG_FULL				
 				INFO("       [TEMPE]: %f", Temperature);
-				INFO("       [HUMID]: %f", Humidity);
-				INFO("       [PRESS]: %f", Pressure);
-				INFO("       [ACCEL]: (%f, %f, %f)", Accelerometer.x, Accelerometer.y, Accelerometer.z);
-				INFO("       [GYROS]: (%f, %f, %f)", Gyroscope.x, Gyroscope.y, Gyroscope.z);
-				INFO("       [MAGNE]: (%f, %f, %f)", Magnetometer.x, Magnetometer.y, Magnetometer.z);
 				#endif
 #endif
 				delays = DELAYRATIO;

@@ -46,10 +46,10 @@ osThreadId defaultTaskHandle;
 
 int main(void)
 {
-
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
-
+printf("hiiii!!!!\n");
+ 
 	/* Configure the system clock */
 	SystemClock_Config();
 

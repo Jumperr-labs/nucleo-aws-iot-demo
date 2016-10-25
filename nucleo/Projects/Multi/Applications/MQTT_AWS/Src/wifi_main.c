@@ -47,8 +47,8 @@
 */
 
 
-char * ssid = "<SSID>";
-char * seckey = "<KEY>";
+char * ssid = "jumperr";
+char * seckey = "pita1982pita2";
 
 /**
 * Private typedef -----------------------------------------------------------
